@@ -1,12 +1,20 @@
-import React from "react";
-// import { useState } from 'react'
+import React, { useState } from "react";
+import { TaskifyContextProvider } from "./context/TaskifyContext";
+//components
+import InputField from "./components/InputField";
 
-const App:React.FC = () => {
+const App: React.FC = () => {
+  const [todo, setTodo] = useState<string | (() => string)>("");
   return (
-    <div className="App w-screen h-screen flex flex-col items-center bg-blue-500">
-      <span className="heading font-neu uppercase text-4xl my-4 mx-0 text-white text-center z-[1] md:text-5xl md:my-[30px]">Taskify</span>
-    </div>
-  )
-}
+    <TaskifyContextProvider>
+      <div className="flex h-screen w-screen flex-col items-center bg-blue-500">
+        <span className="z-[1] mx-0 my-4 text-center font-neu text-5xl uppercase text-white md:my-[30px]">
+          Taskify
+        </span>
+        <InputField todo={todo} setTodo={setTodo} />
+      </div>
+    </TaskifyContextProvider>
+  );
+};
 
 export default App;
