@@ -6,3 +6,4 @@
 - useContext hook to store the todo objects for all components
 - A custom hook "useLocalStorage" to store and retrieve todo objects from localStorage
 - Tailwindcss for styling
+- [React-icons](https://react-icons.github.io/react-icons/)
