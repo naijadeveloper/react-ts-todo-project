@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, useContext, useRef } from "react";
 import { TaskifyContext } from "../context/TaskifyContext";
+import { TodoObject } from "../utilities/TodoObject";
 
 interface InputFieldProps {
   todo: string | (() => string);
@@ -17,7 +18,10 @@ const InputField: React.FC<InputFieldProps> = ({ todo, setTodo }) => {
   function handleFormSubmit(e: FormEvent) {
     e.preventDefault();
     if (todo) {
-      setTodos([...todos, { id: Date.now(), todo, isDone: false }]);
+      setTodos([
+        ...(todos as TodoObject[]),
+        { id: Date.now(), todo, isDone: false },
+      ]);
       setTodo("");
     }
     inputRef.current?.blur();
