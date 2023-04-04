@@ -1,4 +1,4 @@
-import { useState, useContext, ReactNode } from "react";
+import { useState, useContext, ReactNode, FormEvent } from "react";
 //icons
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { MdDone } from "react-icons/md";
@@ -8,54 +8,93 @@ import { TaskifyContext } from "../context/TaskifyContext";
 import { TodoObject } from "../utilities/TodoObject";
 
 const SingleTodo: React.FC<TodoObject> = ({ id, todo, isDone }) => {
-  const { setTodos } = useContext(TaskifyContext);
+  const { todos, setTodos } = useContext(TaskifyContext);
   const [gray, setGray] = useState<boolean>(isDone);
+  const [edit, setEdit] = useState<boolean>(false);
+  const [editText, setEditText] = useState<string>(todo);
+
+  function handleEdit() {
+    setEditText(todo);
+    if (!edit && !isDone) {
+      setEdit(true);
+    } else if (edit == true && !isDone) {
+      setEdit(false);
+    }
+  }
+
+  function handleSubmitNewTodoText(e: FormEvent) {
+    e.preventDefault();
+    setTodos([
+      ...todos.map((eachTodo) => {
+        if (eachTodo.id == id) {
+          eachTodo.todo = editText;
+        }
+        return eachTodo;
+      }),
+    ]);
+    setEdit(false);
+  }
+
+  function handleDelete() {
+    setEdit(false);
+    setTodos([...todos.filter((eachTodo) => eachTodo.id !== id)]);
+  }
 
   function handleDone() {
-    setTodos((todos: TodoObject[]) => {
-      return [
-        ...todos.map((eachTodo) => {
-          eachTodo.id == id &&
-            (() => {
-              eachTodo.isDone = !isDone;
-              setGray(!gray);
-            })();
-          return eachTodo;
-        }),
-      ];
-    });
+    setEdit(false);
+    setTodos([
+      ...todos.map((eachTodo) => {
+        eachTodo.id == id &&
+          (() => {
+            eachTodo.isDone = !isDone;
+            setGray(!gray);
+          })();
+        return eachTodo;
+      }),
+    ]);
   }
 
   return (
     <form
-      className={`flex h-[50px] justify-between overflow-hidden rounded-[5px] ${
-        gray ? "bg-gray-700" : "bg-blue-900"
-      } p-[5px]`}
+      onSubmit={handleSubmitNewTodoText}
+      className={`flex items-start justify-between self-start overflow-hidden rounded-[5px] ${
+        gray ? "border border-blue-900 bg-blue-600" : "bg-blue-900"
+      } p-[5px] transition-all duration-200 ease-out`}
     >
-      <span
-        className={`mr-auto flex items-center py-[5px] pl-[10px] text-[20px] capitalize text-gray-200 ${
-          gray && "line-through decoration-black decoration-wavy decoration-4"
-        }`}
-      >
-        {todo as ReactNode}
-      </span>
+      {edit ? (
+        <input
+          className="mr-[10px] flex-1 rounded-[3px] border-2 border-blue-600 bg-blue-700 px-1 text-lg text-gray-200 outline-none"
+          type="text"
+          value={editText}
+          onChange={(e) => setEditText(e.target.value)}
+          autoFocus
+        />
+      ) : (
+        <span
+          className={`mr-auto flex items-center pl-[10px] text-[20px] capitalize text-gray-200 ${
+            gray && "line-through decoration-black decoration-4"
+          }`}
+        >
+          {todo as ReactNode}
+        </span>
+      )}
+
       <div className="flex items-center justify-evenly gap-2">
         <span
-          id="editIcon"
-          className="flex cursor-pointer items-center rounded-sm bg-gray-200 p-[5px] text-[20px] text-gray-800"
+          onClick={handleEdit}
+          className="flex cursor-pointer items-center rounded-[3px] border border-blue-900 bg-gray-200 p-[5px] text-[20px] text-gray-800"
         >
           <AiFillEdit />
         </span>
         <span
-          id="deleteIcon"
-          className="flex cursor-pointer items-center rounded-sm bg-gray-200 p-[5px] text-[20px] text-red-600"
+          onClick={handleDelete}
+          className="flex cursor-pointer items-center rounded-[3px] border border-blue-900 bg-gray-200 p-[5px] text-[20px] text-red-600"
         >
           <AiFillDelete />
         </span>
         <span
-          id="doneIcon"
           onClick={handleDone}
-          className="flex cursor-pointer items-center rounded-sm bg-gray-200 p-[5px] text-[20px] text-gray-800"
+          className="flex cursor-pointer items-center rounded-[3px] border border-blue-900 bg-gray-200 p-[5px] text-[20px] text-gray-800"
         >
           <MdDone />
         </span>
