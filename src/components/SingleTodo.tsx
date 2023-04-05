@@ -71,7 +71,7 @@ const SingleTodo: React.FC<TodoObject> = ({ id, todo, isDone }) => {
         />
       ) : (
         <span
-          className={`mr-auto flex items-center pl-[10px] text-[20px] capitalize text-gray-200 ${
+          className={`mr-auto flex items-center pl-[10px] text-[20px] text-gray-200 ${
             gray && "line-through decoration-black decoration-4"
           }`}
         >

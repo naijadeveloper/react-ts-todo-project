@@ -36,6 +36,7 @@ const InputField: React.FC<InputFieldProps> = ({ todo, setTodo }) => {
       <input
         ref={inputRef}
         type="text"
+        maxLength={30}
         placeholder="Enter a task"
         value={todo as string}
         onChange={handleSetting}
