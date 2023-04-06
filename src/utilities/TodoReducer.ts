@@ -1,14 +1,14 @@
 import { TodoObject } from "../utilities/TodoObject";
 
-interface actionType {
+export interface actionType {
   type: "add" | "update" | "delete";
   payload1?: TodoObject;
-  payload2?: {id: number, newText?: string}
+  payload2?: {id: number, newText?: string, isDone?: boolean}
 }
 
 export type todoReducerType = (todos: TodoObject[], action: actionType) => TodoObject[];
 
-const TodoReducer = (todos: TodoObject[], action: actionType): TodoObject[] => {
+const TodoReducer: todoReducerType = (todos: TodoObject[], action: actionType): TodoObject[] => {
   switch(action.type) {
     case "add":
       return [
@@ -21,7 +21,7 @@ const TodoReducer = (todos: TodoObject[], action: actionType): TodoObject[] => {
           ...todos.map((eachTodo) => {
             eachTodo.id == action.payload2?.id &&
               (() => {
-                eachTodo.isDone = !eachTodo.isDone;
+                eachTodo.isDone = action.payload2?.isDone as boolean;
               })();
             return eachTodo;
           }),

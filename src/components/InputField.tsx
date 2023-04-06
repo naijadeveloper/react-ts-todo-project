@@ -8,7 +8,7 @@ interface InputFieldProps {
 }
 
 const InputField: React.FC<InputFieldProps> = ({ todo, setTodo }) => {
-  const { todos, setTodos } = useContext(TaskifyContext);
+  const { todos, todoDispatch } = useContext(TaskifyContext);
   const inputRef = useRef<HTMLInputElement>(null);
 
   function handleSetting(e: ChangeEvent<HTMLInputElement>) {
@@ -18,10 +18,10 @@ const InputField: React.FC<InputFieldProps> = ({ todo, setTodo }) => {
   function handleFormSubmit(e: FormEvent) {
     e.preventDefault();
     if (todo) {
-      setTodos([
-        ...(todos as TodoObject[]),
-        { id: Date.now(), todo, isDone: false },
-      ]);
+      todoDispatch({
+        type: "add",
+        payload1: { id: Date.now(), todo, isDone: false },
+      });
       setTodo("");
     }
     inputRef.current?.blur();

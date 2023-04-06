@@ -8,7 +8,7 @@ import { TaskifyContext } from "../context/TaskifyContext";
 import { TodoObject } from "../utilities/TodoObject";
 
 const SingleTodo: React.FC<TodoObject> = ({ id, todo, isDone }) => {
-  const { todos, setTodos } = useContext(TaskifyContext);
+  const { todoDispatch } = useContext(TaskifyContext);
   const [gray, setGray] = useState<boolean>(isDone);
   const [edit, setEdit] = useState<boolean>(false);
   const [editText, setEditText] = useState<string>(todo);
@@ -24,41 +24,26 @@ const SingleTodo: React.FC<TodoObject> = ({ id, todo, isDone }) => {
 
   function handleSubmitNewTodoText(e: FormEvent) {
     e.preventDefault();
-    setTodos([
-      ...todos.map((eachTodo) => {
-        if (eachTodo.id == id) {
-          eachTodo.todo = editText;
-        }
-        return eachTodo;
-      }),
-    ]);
+    todoDispatch({ type: "update", payload2: { id, newText: editText } });
     setEdit(false);
   }
 
   function handleDelete() {
     setEdit(false);
-    setTodos([...todos.filter((eachTodo) => eachTodo.id !== id)]);
+    todoDispatch({ type: "delete", payload2: { id } });
   }
 
   function handleDone() {
     setEdit(false);
-    setTodos([
-      ...todos.map((eachTodo) => {
-        eachTodo.id == id &&
-          (() => {
-            eachTodo.isDone = !isDone;
-            setGray(!gray);
-          })();
-        return eachTodo;
-      }),
-    ]);
+    todoDispatch({ type: "update", payload2: { id, isDone: !isDone } });
+    setGray(!gray);
   }
 
   return (
     <form
       onSubmit={handleSubmitNewTodoText}
       className={`flex items-start justify-between self-start overflow-hidden rounded-[5px] ${
-        gray ? "border border-blue-900 bg-blue-600" : "bg-blue-900"
+        gray || isDone ? "border border-blue-900 bg-blue-600" : "bg-blue-900"
       } p-[5px] transition-all duration-200 ease-out`}
     >
       {edit ? (
@@ -72,7 +57,7 @@ const SingleTodo: React.FC<TodoObject> = ({ id, todo, isDone }) => {
       ) : (
         <span
           className={`mr-auto flex items-center pl-[10px] text-[20px] text-gray-200 ${
-            gray && "line-through decoration-black decoration-4"
+            (gray || isDone) && "line-through decoration-black decoration-4"
           }`}
         >
           {todo as ReactNode}

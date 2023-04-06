@@ -1,9 +1,14 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode } from "react";
 import { TodoObject } from "../utilities/TodoObject";
+import useLocalStorage from "../hooks/useLocalStorage";
+import TodoReducer, {
+  todoReducerType,
+  actionType,
+} from "../utilities/TodoReducer";
 
 type contextType = {
   todos: TodoObject[];
-  setTodos: React.Dispatch<React.SetStateAction<TodoObject[]>>;
+  todoDispatch: React.Dispatch<actionType>;
 };
 
 export const TaskifyContext = createContext({} as contextType);
@@ -13,9 +18,13 @@ export const TaskifyContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [todos, setTodos] = useState<TodoObject[]>([]);
+  const [todos, todoDispatch] = useLocalStorage<todoReducerType, TodoObject[]>(
+    "todoStorage",
+    [],
+    TodoReducer
+  );
   return (
-    <TaskifyContext.Provider value={{ todos, setTodos }}>
+    <TaskifyContext.Provider value={{ todos, todoDispatch }}>
       {children}
     </TaskifyContext.Provider>
   );
