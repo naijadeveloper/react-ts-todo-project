@@ -10,9 +10,10 @@ const TodoList = () => {
   // console.table(todos);
   return (
     <div className="mt-[20px] grid w-full grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-[10px] px-2 md:w-[90%]">
-      {(todos as TodoObject[]).map((todo: TodoObject) => (
-        <SingleTodo key={todo.id} {...todo} />
-      ))}
+      {todos &&
+        (todos as TodoObject[]).map((todo: TodoObject) => (
+          <SingleTodo key={todo.id} {...todo} />
+        ))}
     </div>
   );
 };
